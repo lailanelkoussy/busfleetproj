@@ -13,8 +13,6 @@ import java.util.List;
 @Table(name = "route")
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 public class Route {
 

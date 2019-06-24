@@ -12,8 +12,6 @@ import java.util.List;
 @Table(name = "bus")
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 
 public class Bus {

@@ -1,6 +1,5 @@
 package com.busfleetproj.busfleetproj.services;
 
-import com.busfleetproj.busfleetproj.entities.Bus;
 import com.busfleetproj.busfleetproj.entities.Route;
 import com.busfleetproj.busfleetproj.repos.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;

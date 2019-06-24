@@ -36,8 +36,5 @@ public class BusController {
     @RequestMapping(method = RequestMethod.PUT, value = "/buses/{id}")
     public void updateBus(@RequestBody Bus bus, @PathVariable int id) {
         busService.updateBus(id, bus);
-
     }
-
-
 }

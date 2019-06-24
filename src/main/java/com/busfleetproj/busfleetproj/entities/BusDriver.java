@@ -1,28 +1,20 @@
 package com.busfleetproj.busfleetproj.entities;
 
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 
 @Table(name = "bus_driver")
 @Entity
 @Data
-@Getter
-@Setter
+@NoArgsConstructor
 public class BusDriver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "driver_id")
     private int driverId;
-
-    @OneToOne
-    @JoinColumn(name = "license_id")
-    private DrivingLicense license;
 
     @Column(name = "first_name")
     private String firstName;
@@ -34,10 +26,7 @@ public class BusDriver {
     @JoinColumn(name = "bus_id")
     private Bus bus;
 
-
-
-
-
-
-
+    @OneToOne
+    @JoinColumn(name = "license_id")
+    private DrivingLicense license;
 }

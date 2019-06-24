@@ -8,5 +8,5 @@ CREATE TABLE bus
     year            int(4)      DEFAULT NULL,
     PRIMARY KEY (bus_id),
     FOREIGN KEY (route_id) REFERENCES route (route_id)
-        ON UPDATE CASCADE ON DELETE RESTRICT
+        ON UPDATE CASCADE
 );

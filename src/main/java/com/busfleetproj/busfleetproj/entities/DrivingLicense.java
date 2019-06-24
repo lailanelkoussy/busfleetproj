@@ -1,8 +1,7 @@
 package com.busfleetproj.busfleetproj.entities;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -10,7 +9,7 @@ import java.util.Calendar;
 @Table(name = "driving_license")
 @Entity
 @Data
-@Getter @Setter
+@NoArgsConstructor
 public class DrivingLicense {
 
     @Id

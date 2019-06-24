@@ -8,7 +8,7 @@ CREATE TABLE student
     address    varchar(255) DEFAULT NULL,
     PRIMARY KEY (student_id),
     FOREIGN KEY (route_id) REFERENCES route (route_id)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
+        ON UPDATE CASCADE,
     FOREIGN KEY (bus_id) REFERENCES bus(bus_id)
 
 );

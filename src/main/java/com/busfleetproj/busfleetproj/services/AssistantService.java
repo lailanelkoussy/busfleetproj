@@ -42,6 +42,4 @@ public class AssistantService {
     public void deleteAssistant(int id) {
         assistantRepository.deleteById(id);
     }
-
-
 }

@@ -2,6 +2,8 @@ package com.busfleetproj.busfleetproj.entities;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -9,6 +11,8 @@ import javax.persistence.*;
 @Table(name = "bus_driver")
 @Entity
 @Data
+@Getter
+@Setter
 public class BusDriver {
 
     @Id

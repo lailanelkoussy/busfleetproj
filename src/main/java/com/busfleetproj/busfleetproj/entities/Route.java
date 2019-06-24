@@ -1,6 +1,9 @@
 package com.busfleetproj.busfleetproj.entities;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -10,6 +13,9 @@ import java.util.List;
 @Table(name = "route")
 @Entity
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Route {
 
     @Id

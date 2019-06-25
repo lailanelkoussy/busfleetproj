@@ -37,4 +37,18 @@ public class BusController {
     public void updateBus(@RequestBody Bus bus, @PathVariable int id) {
         busService.updateBus(id, bus);
     }
+
+    //routeId == -1 if you want to remove route
+    @RequestMapping(method = RequestMethod.PATCH, value = "/buses/{id}/route/id")
+    public void changeBusRoute(@PathVariable int id, @RequestBody int routeId) {
+        busService.changeBusRoute(id, routeId);
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "/buses/{id}/students/id")
+    public void addStudents(@PathVariable int id, @RequestBody List<Integer> studentIds) {
+        busService.addStudents(id, studentIds);
+    }
+
+
+
 }

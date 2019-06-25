@@ -1,5 +1,6 @@
 package com.busfleetproj.busfleetproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,8 +23,13 @@ public class Assistant {
     @Column(name = "last_name")
     private String lastName;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "bus_id")
     private Bus bus;
+
+    public void makeBusNull(){
+        bus = null;
+    }
 
 }

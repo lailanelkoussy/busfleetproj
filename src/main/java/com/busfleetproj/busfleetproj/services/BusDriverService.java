@@ -1,6 +1,8 @@
 package com.busfleetproj.busfleetproj.services;
 
+import com.busfleetproj.busfleetproj.entities.Bus;
 import com.busfleetproj.busfleetproj.entities.BusDriver;
+import com.busfleetproj.busfleetproj.entities.Route;
 import com.busfleetproj.busfleetproj.repos.BusDriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ public class BusDriverService {
 
     @Autowired
     BusDriverRepository busDriverRepository;
+
+    @Autowired
+    BusService busService;
 
     public List<BusDriver> getAllBusDrivers() {
         List<BusDriver> busDrivers = new ArrayList<>();
@@ -43,4 +48,34 @@ public class BusDriverService {
         busDriverRepository.save(busDriver);
     }
 
+    public void changeBusDriverBus(int id, int bus_id) {
+
+        List<Bus> busList = new ArrayList<>();
+        List<BusDriver> busDrivers = new ArrayList<>();
+
+        BusDriver busDriver = getBusDriver(id);             //get bus driver corresponding to id
+
+
+        if (bus_id == -1) {
+            busDriver.makeBusNull();
+
+        } else {
+
+            Bus bus = busService.getBus(bus_id);                //get bus corresponding to id
+
+            busDriver.setBus(bus);                              //setting the bus driver with the new bus
+
+            bus.setBusDriver(busDriver);                        //setting the bus with the new bus driver
+            busList.add(bus);                                   //adding new bus to update list
+
+
+        }
+        busDrivers.add(busDriver);
+        busService.updateBuses(busList);                        //saving the updated buses
+        busDriverRepository.saveAll(busDrivers);                //saving the updates bus drivers
+
+
+    }
 }
+
+

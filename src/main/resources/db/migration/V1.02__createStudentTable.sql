@@ -1,8 +1,8 @@
 CREATE TABLE student
 (
     student_id int(11) NOT NULL AUTO_INCREMENT,
-    route_id   int(11) NOT NULL,
-    bus_id int(11) NOT NULL,
+    route_id   int(11) DEFAULT NULL,
+    bus_id int(11) DEFAULT NULL,
     first_name varchar(255) DEFAULT NULL,
     last_name  varchar(255) DEFAULT NULL,
     address    varchar(255) DEFAULT NULL,

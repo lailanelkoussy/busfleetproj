@@ -1,5 +1,6 @@
 package com.busfleetproj.busfleetproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +34,7 @@ public class Bus {
 
     private int year;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "bus")
     private List<Student> students;
 
@@ -41,5 +43,9 @@ public class Bus {
 
     @OneToOne(mappedBy = "bus")
     private Assistant assistant;
+
+    public void makeRouteNull(){
+        route = null;
+    }
 }
 

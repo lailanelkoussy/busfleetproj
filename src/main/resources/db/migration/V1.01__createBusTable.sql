@@ -1,7 +1,7 @@
 CREATE TABLE bus
 (
     bus_id          int(11) NOT NULL AUTO_INCREMENT,
-    route_id        int(11),
+    route_id        int(11) DEFAULT NULL,
     license_plate   varchar(255) DEFAULT NULL,
     number_of_seats int(11)      DEFAULT NULL,
     model           varchar(255) DEFAULT NULL,

@@ -43,5 +43,9 @@ public class StudentService {
         studentRepository.save(student);
     }
 
+    public void updateStudents(List<Student> students){
+        studentRepository.saveAll(students);
+    }
+
 
 }

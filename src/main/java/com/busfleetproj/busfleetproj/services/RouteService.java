@@ -43,4 +43,8 @@ public class RouteService {
     public void updateRoute(int id, Route route){
         routeRepository.save(route);
     }
+
+    public void updateRoutes(List<Route> routes){
+        routeRepository.saveAll(routes);
+    }
 }

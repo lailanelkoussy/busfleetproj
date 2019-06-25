@@ -1,5 +1,6 @@
 package com.busfleetproj.busfleetproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,9 +26,11 @@ public class Student {
     @Column(name = "address")
     private String address;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
+
 
     @ManyToOne
     @JoinColumn(name = "bus_id")

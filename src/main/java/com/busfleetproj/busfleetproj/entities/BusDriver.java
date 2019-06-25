@@ -1,9 +1,11 @@
 package com.busfleetproj.busfleetproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Table(name = "bus_driver")
 @Entity
@@ -22,11 +24,17 @@ public class BusDriver {
     @Column(name = "last_name")
     private String lastName;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "bus_id")
     private Bus bus;
 
     @OneToOne
     @JoinColumn(name = "license_id")
+    @NotNull
     private DrivingLicense license;
+
+    public void makeBusNull(){
+        bus = null;
+    }
 }

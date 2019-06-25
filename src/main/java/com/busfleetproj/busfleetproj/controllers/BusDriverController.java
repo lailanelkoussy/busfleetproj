@@ -37,4 +37,10 @@ public class BusDriverController {
     public void updateBusDriver(@PathVariable int id, @RequestBody BusDriver busDriver){
         busDriverService.updateBusDriver(id, busDriver);
     }
+
+    //bus_id == -1 if you want to remove bus
+    @RequestMapping(method = RequestMethod.PATCH, value = "/busdrivers/{id}/bus/id")
+    public void changeBusRoute(@PathVariable int id, @RequestBody int bus_id) {
+        busDriverService.changeBusDriverBus(id, bus_id);
+    }
 }

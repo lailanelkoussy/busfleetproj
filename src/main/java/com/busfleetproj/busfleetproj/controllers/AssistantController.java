@@ -37,4 +37,10 @@ public class AssistantController {
     public void updateAssistant(@PathVariable int id, @RequestBody Assistant assistant) {
         assistantService.updateAssistant(id, assistant);
     }
+
+    //bus_id == -1 if you want to remove bus
+    @RequestMapping(method = RequestMethod.PATCH, value = "/assistants/{id}/bus/id")
+    public void changeBusRoute(@PathVariable int id, @RequestBody int bus_id) {
+        assistantService.changeAssistantBus(id, bus_id);
+    }
 }

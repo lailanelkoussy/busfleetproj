@@ -1,5 +1,6 @@
 package com.busfleetproj.busfleetproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ public class DrivingLicense {
     @Column(name = "expiry_date")
     private Calendar expiryDate;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "license")
     private BusDriver driver;
 }

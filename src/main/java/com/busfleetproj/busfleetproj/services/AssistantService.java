@@ -2,7 +2,6 @@ package com.busfleetproj.busfleetproj.services;
 
 import com.busfleetproj.busfleetproj.entities.Assistant;
 import com.busfleetproj.busfleetproj.entities.Bus;
-import com.busfleetproj.busfleetproj.entities.BusDriver;
 import com.busfleetproj.busfleetproj.repos.AssistantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

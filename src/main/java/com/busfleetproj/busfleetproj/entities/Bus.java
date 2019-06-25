@@ -34,7 +34,7 @@ public class Bus {
 
     private int year;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "bus")
     private List<Student> students;
 

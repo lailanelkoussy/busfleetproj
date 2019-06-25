@@ -31,10 +31,14 @@ public class Student {
     @JoinColumn(name = "route_id")
     private Route route;
 
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bus_id")
     private Bus bus;
+
+    public void makeBusNull() {
+        bus = null;
+    }
 
 }
 

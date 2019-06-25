@@ -2,16 +2,19 @@ package com.busfleetproj.busfleetproj.controllers;
 
 import com.busfleetproj.busfleetproj.entities.Assistant;
 import com.busfleetproj.busfleetproj.services.AssistantService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+//@Api(value = "Assistant Management System")
 public class AssistantController {
 
     @Autowired
     AssistantService assistantService;
+
 
     @RequestMapping("/assistants")
     public List<Assistant> getAllAssistants() {

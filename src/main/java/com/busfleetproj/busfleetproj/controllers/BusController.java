@@ -5,6 +5,8 @@ import java.util.List;
 import com.busfleetproj.busfleetproj.entities.Bus;
 import com.busfleetproj.busfleetproj.services.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,8 +47,14 @@ public class BusController {
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/buses/{id}/students/id")
-    public void addStudents(@PathVariable int id, @RequestBody List<Integer> studentIds) {
-        busService.addStudents(id, studentIds);
+    public ResponseEntity<Object> addStudents(@PathVariable int id, @RequestBody List<Integer> studentIds) {
+        return new ResponseEntity<>(busService.addStudents(id, studentIds) ? HttpStatus.OK:HttpStatus.NOT_ACCEPTABLE );
+
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "buses/{id}/students/id/remove")
+    public void removeStudents(@PathVariable int id, @RequestBody List<Integer> studentIds){
+        busService.removeStudents(id,studentIds);
     }
 
 

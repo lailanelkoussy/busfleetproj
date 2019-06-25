@@ -5,6 +5,8 @@ import com.busfleetproj.busfleetproj.entities.Route;
 import com.busfleetproj.busfleetproj.entities.Student;
 import com.busfleetproj.busfleetproj.repos.BusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,19 +43,23 @@ public class BusService {
 
     }
 
-    public void addBus(Bus bus) {
+    public ResponseEntity addBus(Bus bus) {
         busRepository.save(bus);
+        return new ResponseEntity<>("Bus successfully added.", HttpStatus.CREATED);
     }
 
-    public void deleteBus(int id) {
+    public ResponseEntity deleteBus(int id) {
         busRepository.deleteById(id);
+        return new ResponseEntity<>("Bus successfully added.", HttpStatus.OK);
     }
 
-    public void updateBus(int id, Bus bus) {
+    public ResponseEntity updateBus(int id, Bus bus) {
+
         busRepository.save(bus);
+        return new ResponseEntity<>("Bus successfully updated.", HttpStatus.CREATED);
     }
 
-     // we want to change  the bus to route_id's route
+    // we want to change  the bus to route_id's route
     public void changeBusRoute(int id, int route_id) {
 
         List<Route> routeList = new ArrayList<>();
@@ -78,28 +84,46 @@ public class BusService {
         busRepository.saveAll(busList);
     }
 
-    public void addStudents(int id, List<Integer> studentIds) {
+    public boolean addStudents(int id, List<Integer> studentIds) {
 
         Bus bus = getBus(id);
-        Student tempStudent;
+
         int seatsLeft = bus.getNumberOfSeats() - bus.getStudents().size() - 1;
         if (seatsLeft < studentIds.size()) {
-
+            return false;
         } else {
-            List<Student> students = new ArrayList<>();
-            for (int studentId : studentIds) {
-                tempStudent = studentService.getStudent(studentId);              //get student using its id
-                tempStudent.setBus(bus);                                         //setting the bus of that student to the new bus
-                students.add(tempStudent);                                       //adding to list of students to be updated
-            }
+            List<Student> students = studentService.getStudents(studentIds);
 
+            for (Student student : students) {
+                student.setBus(bus);                                         //setting the bus of that student to the new bus
+            }
             studentService.updateStudents(students);                             //updating student in its repository
             students.addAll(bus.getStudents());
             bus.setStudents(students);                                           //updating student list in bus
+
+            return true;
         }
     }
 
     public void updateBuses(List<Bus> buses) {
         busRepository.saveAll(buses);
+    }
+
+    public void removeStudents(int id, List<Integer> studentIds) {
+        Bus bus = getBus(id);
+        List<Student> studentsToUpdate = new ArrayList<>();
+        List<Student> studentsToRemove = studentService.getStudents(studentIds);
+        List<Student> busStudents = bus.getStudents();
+
+        for (Student student: studentsToRemove){
+            busStudents.remove(student);
+            student.makeBusNull();
+            studentsToUpdate.add(student);
+        }
+
+        bus.setStudents(busStudents);
+        updateBus(id, bus);
+
+        studentService.updateStudents(studentsToUpdate);
     }
 }

@@ -31,6 +31,10 @@ public class StudentService {
             return new Student();
     }
 
+    public List<Student> getStudents(List<Integer> studentIds){
+        return studentRepository.findAllById(studentIds);
+    }
+
     public void addStudent(Student student) {
         studentRepository.save(student);
     }

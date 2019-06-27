@@ -4,6 +4,7 @@ import com.busfleetproj.busfleetproj.entities.Bus;
 import com.busfleetproj.busfleetproj.entities.Route;
 import com.busfleetproj.busfleetproj.entities.Student;
 import com.busfleetproj.busfleetproj.repos.BusRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class BusService {
 
     @Autowired
@@ -27,6 +29,7 @@ public class BusService {
 
     public List<Bus> getAllBuses() {
         List<Bus> buses = new ArrayList<>();
+        log.info("Retrieving bus objects from database");
         busRepository.findAll()
                 .forEach(buses::add);
 
@@ -36,27 +39,33 @@ public class BusService {
     public Bus getBus(int id) {
 
         Optional<Bus> busOptional = busRepository.findById(id);
-        if (busOptional.isPresent())
+        log.info("Retrieving bus object id#" + id + " from database");
+        if (busOptional.isPresent()) {
+            log.info("Bus object id#" + id + "found in database");
             return busOptional.get();
-        else
+        } else {
+            log.error("Bus object id#" + id + " not found in database");
             return new Bus();
+        }
 
     }
 
-    public ResponseEntity addBus(Bus bus) {
+    public void addBus(Bus bus) {
         busRepository.save(bus);
-        return new ResponseEntity<>("Bus successfully added.", HttpStatus.CREATED);
+        log.info("Saving bus object to database");
+
     }
 
-    public ResponseEntity deleteBus(int id) {
+    public void deleteBus(int id) {
         busRepository.deleteById(id);
-        return new ResponseEntity<>("Bus successfully added.", HttpStatus.OK);
+        log.info("Deleting bus object id#" + id + "from database");
+
     }
 
-    public ResponseEntity updateBus(int id, Bus bus) {
-
+    public void updateBus(int id, Bus bus) {
         busRepository.save(bus);
-        return new ResponseEntity<>("Bus successfully updated.", HttpStatus.CREATED);
+        log.info("Updating bus object id#" + id + " in database");
+
     }
 
     // we want to change  the bus to route_id's route
@@ -70,6 +79,7 @@ public class BusService {
 
         if (route_id == -1) {
             bus.makeRouteNull();                                                     //if we want to remove route from bus
+            log.info("Removing route assigned to bus object id#" + id);
         } else {
             Route route = routeService.getRoute(route_id);                          //route to update bus to
 
@@ -77,11 +87,13 @@ public class BusService {
             routeList.add(route);                                                   //adding route to update list
 
             bus.setRoute(route);                                                    //setting bus's route to new route
+            log.info("Assigning route object id#" + route_id + " to bus object id#" + id);
         }
 
         busList.add(bus);
         routeService.updateRoutes(routeList);
         busRepository.saveAll(busList);
+        log.info("Saving changes to database");
     }
 
     public boolean addStudents(int id, List<Integer> studentIds) {
@@ -90,8 +102,10 @@ public class BusService {
 
         int seatsLeft = bus.getNumberOfSeats() - bus.getStudents().size() - 1;
         if (seatsLeft < studentIds.size()) {
+            log.error("Number of students exceeds current bus capacity");
             return false;
         } else {
+            log.info("Adding students to bus");
             List<Student> students = studentService.getStudents(studentIds);
 
             for (Student student : students) {
@@ -107,6 +121,7 @@ public class BusService {
 
     public void updateBuses(List<Bus> buses) {
         busRepository.saveAll(buses);
+        log.info("Updating bus objects information");
     }
 
     public void removeStudents(int id, List<Integer> studentIds) {
@@ -115,7 +130,8 @@ public class BusService {
         List<Student> studentsToRemove = studentService.getStudents(studentIds);
         List<Student> busStudents = bus.getStudents();
 
-        for (Student student: studentsToRemove){
+        log.info("Removing students from bus object id#" + id);
+        for (Student student : studentsToRemove) {
             busStudents.remove(student);
             student.makeBusNull();
             studentsToUpdate.add(student);

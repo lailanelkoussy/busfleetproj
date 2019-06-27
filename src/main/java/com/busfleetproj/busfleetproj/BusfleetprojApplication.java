@@ -7,7 +7,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @Slf4j
-@EnableSwagger2
 public class BusfleetprojApplication {
 
     public static void main(String[] args) {

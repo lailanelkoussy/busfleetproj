@@ -1,12 +1,15 @@
 package com.busfleetproj.busfleetproj.controllers;
 
+import com.busfleetproj.busfleetproj.dto.StudentDTO;
 import com.busfleetproj.busfleetproj.entities.Student;
 import com.busfleetproj.busfleetproj.services.StudentService;
 import io.swagger.annotations.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,7 +47,10 @@ public class StudentController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void addStudent(
             @ApiParam(value = "Student object to add", required = true)
-            @RequestBody Student student) {
+            @Valid @RequestBody StudentDTO studentDTO) {
+        Student student = new Student();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(studentDTO, student);
         studentService.addStudent(student);
     }
 
@@ -68,7 +74,10 @@ public class StudentController {
             @ApiParam(value = "Id of student object to update", required = true)
             @PathVariable int id,
             @ApiParam(value = "Updated student object", required = true)
-            @RequestBody Student student) {
+            @Valid @RequestBody StudentDTO studentDTO) {
+        Student student = new Student();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(studentDTO, student);
         studentService.updateStudent(id, student);
     }
 

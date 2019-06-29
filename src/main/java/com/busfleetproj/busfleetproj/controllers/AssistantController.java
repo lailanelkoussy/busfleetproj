@@ -1,12 +1,15 @@
 package com.busfleetproj.busfleetproj.controllers;
 
+import com.busfleetproj.busfleetproj.dto.AssistantDTO;
 import com.busfleetproj.busfleetproj.entities.Assistant;
 import com.busfleetproj.busfleetproj.services.AssistantService;
 import io.swagger.annotations.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,7 +47,10 @@ public class AssistantController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void addAssistant(
             @ApiParam(value = "Assistant object to store in database", required = true)
-            @RequestBody Assistant assistant) {
+            @Valid @RequestBody AssistantDTO assistantDTO) {
+        Assistant assistant = new Assistant();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(assistantDTO, assistant);
         assistantService.addAssistant(assistant);
     }
 
@@ -67,7 +73,10 @@ public class AssistantController {
             @ApiParam(value = "Id of assistant object to update in database", required = true)
             @PathVariable int id,
             @ApiParam(value = "Updated assistant object", required = true)
-            @RequestBody Assistant assistant) {
+            @Valid @RequestBody AssistantDTO assistantDTO) {
+        Assistant assistant = new Assistant();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(assistantDTO, assistant);
         assistantService.updateAssistant(id, assistant);
     }
 

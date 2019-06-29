@@ -2,14 +2,18 @@ package com.busfleetproj.busfleetproj.controllers;
 
 import java.util.List;
 
+import com.busfleetproj.busfleetproj.dto.BusDTO;
 import com.busfleetproj.busfleetproj.entities.Bus;
 import com.busfleetproj.busfleetproj.services.BusService;
 import io.swagger.annotations.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/buses")
@@ -47,7 +51,10 @@ public class BusController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void addBus(
             @ApiParam(value = "Bus object to add to database", required = true)
-            @RequestBody Bus bus) {
+            @Valid @RequestBody BusDTO busDTO) {
+        Bus bus = new Bus();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(busDTO, bus);
         busService.addBus(bus);
     }
 
@@ -71,7 +78,10 @@ public class BusController {
             @ApiParam(value = "Id of bus to update in database", required = true)
             @PathVariable int id,
             @ApiParam(value = "Updated bus object")
-            @RequestBody Bus bus) {
+            @Valid @RequestBody BusDTO busDTO) {
+        Bus bus = new Bus();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(busDTO, bus);
         busService.updateBus(id, bus);
     }
 

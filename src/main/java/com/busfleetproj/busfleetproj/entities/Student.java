@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Table(name = "student")
 @Entity
@@ -18,9 +19,11 @@ public class Student {
     private int studentId;
 
     @Column(name = "first_name")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "No numbers, special characters or spaces" )
     private String firstName;
 
     @Column(name = "last_name")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "No numbers, special characters or spaces" )
     private String lastName;
 
     @Column(name = "address")

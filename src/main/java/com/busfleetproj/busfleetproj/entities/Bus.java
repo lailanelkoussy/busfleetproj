@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Bus {
     private Route route;
 
     @Column(name = "license_plate")
+    @Pattern(regexp = "^[a-zA-Z0-9_.-]*$", message = "Only letters and numbers")
     private String licensePlate;
 
     @Column(name = "number_of_seats")
@@ -33,7 +35,6 @@ public class Bus {
     private String model;
 
     private int year;
-
 
     @OneToMany(mappedBy = "bus")
     private List<Student> students;

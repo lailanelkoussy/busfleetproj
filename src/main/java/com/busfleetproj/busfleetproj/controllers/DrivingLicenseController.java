@@ -1,12 +1,15 @@
 package com.busfleetproj.busfleetproj.controllers;
 
+import com.busfleetproj.busfleetproj.dto.DrivingLicenseDTO;
 import com.busfleetproj.busfleetproj.entities.DrivingLicense;
 import com.busfleetproj.busfleetproj.services.DrivingLicenseService;
 import io.swagger.annotations.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +25,7 @@ public class DrivingLicenseController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
-    public List<DrivingLicense> getAllDrivingLicenses(){
+    public List<DrivingLicense> getAllDrivingLicenses() {
         return drivingLicenseService.getAllDrivingLicenses();
     }
 
@@ -33,7 +36,7 @@ public class DrivingLicenseController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public DrivingLicense getDrivingLicense(
             @ApiParam(value = "Id of driving license object to retrieve", required = true)
-            @PathVariable int id){
+            @PathVariable int id) {
         return drivingLicenseService.getDrivingLicense(id);
     }
 
@@ -44,7 +47,10 @@ public class DrivingLicenseController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void addDrivingLicense(
             @ApiParam(value = "Driving license object to add")
-            @RequestBody DrivingLicense drivingLicense){
+            @Valid @RequestBody DrivingLicenseDTO drivingLicenseDTO) {
+        DrivingLicense drivingLicense = new DrivingLicense();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(drivingLicenseDTO, drivingLicense);
         drivingLicenseService.addDrivingLicense(drivingLicense);
     }
 
@@ -55,11 +61,11 @@ public class DrivingLicenseController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void deleteDrivingLicense(
             @ApiParam(value = "Id of driving license object to delete", required = true)
-            @PathVariable int id){
+            @PathVariable int id) {
         drivingLicenseService.deleteDrivingLicense(id);
     }
 
-    @PutMapping(value ="/{id}")
+    @PutMapping(value = "/{id}")
     @ApiOperation(value = "Update driving license object in database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated object"),
@@ -68,7 +74,10 @@ public class DrivingLicenseController {
             @ApiParam(value = "Id of driving license object to update", required = true)
             @PathVariable int id,
             @ApiParam(value = "Updated riving license object", required = true)
-            @RequestBody DrivingLicense drivingLicense){
+            @Valid @RequestBody DrivingLicenseDTO drivingLicenseDTO) {
+        DrivingLicense drivingLicense = new DrivingLicense();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(drivingLicenseDTO, drivingLicense);
         drivingLicenseService.updateDrivingLicense(id, drivingLicense);
     }
 }

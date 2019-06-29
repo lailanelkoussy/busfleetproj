@@ -4,27 +4,30 @@ import com.busfleetproj.busfleetproj.entities.Route;
 import com.busfleetproj.busfleetproj.repos.RouteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
+@CacheConfig(cacheNames={"routes"})
 public class RouteService {
 
     @Autowired
     private RouteRepository routeRepository;
 
+    @Cacheable
     public List<Route> getAllRoutes() {
-        List<Route> routes = new ArrayList<>();
         log.info("Retrieving route objects from database");
-        routeRepository.findAll()
-                .forEach(routes::add);
-        return routes;
+        return routeRepository.findAll();
     }
 
+    @Cacheable(key = "#id")
     public Route getRoute(int id) {
 
         Optional<Route> routeOptional = routeRepository.findById(id);
@@ -44,19 +47,28 @@ public class RouteService {
         log.info("Saving route object to database");
     }
 
+    @CacheEvict(key = "#id")
     public void deleteRoute(int id) {
         routeRepository.deleteById(id);
         log.info("Deleting route object id#" + id + "from database");
     }
 
-    public void updateRoute(int id, Route route) {
+    @CachePut(key = "#id")
+    public Route updateRoute(int id, Route route) {
         routeRepository.save(route);
         log.info("Updating route object id#" + id + " in database");
+        return route;
 
     }
 
+    @CacheEvict(allEntries = true)
     public void updateRoutes(List<Route> routes) {
         routeRepository.saveAll(routes);
         log.info("Updating route objects in database");
+    }
+
+    @CachePut(key = "#id")
+    public Route updateCacheEntry(int id, Route route){
+        return route;
     }
 }

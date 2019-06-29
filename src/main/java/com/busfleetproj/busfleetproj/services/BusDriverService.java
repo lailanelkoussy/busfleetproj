@@ -5,14 +5,18 @@ import com.busfleetproj.busfleetproj.entities.BusDriver;
 import com.busfleetproj.busfleetproj.repos.BusDriverRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
+@CacheConfig(cacheNames = {"busdrivers"})
 public class BusDriverService {
 
     @Autowired
@@ -21,15 +25,14 @@ public class BusDriverService {
     @Autowired
     BusService busService;
 
+    @Cacheable
     public List<BusDriver> getAllBusDrivers() {
-        List<BusDriver> busDrivers = new ArrayList<>();
         log.info("Retrieving bus driver objects from database");
-        busDriverRepository.findAll()
-                .forEach(busDrivers::add);
 
-        return busDrivers;
+        return busDriverRepository.findAll();
     }
 
+    @Cacheable(key = "#id")
     public BusDriver getBusDriver(int id) {
         Optional<BusDriver> busDriverOptional = busDriverRepository.findById(id);
         log.info("Retrieving bus driver object id#" + id + " from database");
@@ -47,23 +50,22 @@ public class BusDriverService {
         log.info("Saving bus driver object to database");
     }
 
+    @CacheEvict(key = "#id")
     public void deleteBusDriver(int id) {
         busDriverRepository.deleteById(id);
         log.info("Deleting bus driver object id#" + id + "from database");
     }
 
+    @CachePut(key = "#id")
     public void updateBusDriver(int id, BusDriver busDriver) {
         busDriverRepository.save(busDriver);
         log.info("Updating bus driver object id#" + id + " in database");
     }
 
-    public void changeBusDriverBus(int id, int bus_id) {
-
-        List<Bus> busList = new ArrayList<>();
-        List<BusDriver> busDrivers = new ArrayList<>();
+    @CachePut(key = "#id")
+    public BusDriver changeBusDriverBus(int id, int bus_id) {
 
         BusDriver busDriver = getBusDriver(id);             //get bus driver corresponding to id
-
 
         if (bus_id == -1) {
             busDriver.makeBusNull();
@@ -77,15 +79,18 @@ public class BusDriverService {
             busDriver.setBus(bus);                              //setting the bus driver with the new bus
 
             bus.setBusDriver(busDriver);                        //setting the bus with the new bus driver
-            busList.add(bus);                                   //adding new bus to update list
-
+            busService.updateBus(bus_id, bus);                   //saving the updated bus
+            busService.updateCacheEntry(bus_id, bus);
 
         }
-        busDrivers.add(busDriver);
-        busService.updateBuses(busList);                        //saving the updated buses
-        busDriverRepository.saveAll(busDrivers);                //saving the updates bus drivers
+        busDriverRepository.save(busDriver);                //saving the updates bus drivers
         log.info("Saving changes to database");
+        return busDriver;
+    }
 
+    @CachePut(key = "#id")
+    public BusDriver updateCacheEntry(int id, BusDriver busDriver) {
+        return busDriver;
     }
 }
 

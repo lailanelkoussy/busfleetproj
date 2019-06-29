@@ -1,12 +1,15 @@
 package com.busfleetproj.busfleetproj.controllers;
 
+import com.busfleetproj.busfleetproj.dto.BusDriverDTO;
 import com.busfleetproj.busfleetproj.entities.BusDriver;
 import com.busfleetproj.busfleetproj.services.BusDriverService;
 import io.swagger.annotations.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,7 +47,10 @@ public class BusDriverController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void addBusDriver(
             @ApiParam(value = "Bus driver object to add to database", required = true)
-            @RequestBody BusDriver busDriver) {
+            @Valid @RequestBody BusDriverDTO busDriverDTO) {
+        BusDriver busDriver = new BusDriver();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(busDriverDTO, busDriver);
         busDriverService.addBusDriver(busDriver);
     }
 
@@ -68,7 +74,10 @@ public class BusDriverController {
             @ApiParam(value = "Id of bus driver to update", required = true)
             @PathVariable int id,
             @ApiParam(value = "Updated bus driver object", required = true)
-            @RequestBody BusDriver busDriver) {
+            @Valid @RequestBody BusDriverDTO busDriverDTO) {
+        BusDriver busDriver = new BusDriver();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(busDriverDTO, busDriver);
         busDriverService.updateBusDriver(id, busDriver);
     }
 

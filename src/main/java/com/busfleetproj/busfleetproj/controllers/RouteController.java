@@ -2,12 +2,16 @@ package com.busfleetproj.busfleetproj.controllers;
 
 import java.util.List;
 
+import com.busfleetproj.busfleetproj.dto.RouteDTO;
 import com.busfleetproj.busfleetproj.entities.Route;
 import com.busfleetproj.busfleetproj.services.RouteService;
 import io.swagger.annotations.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/routes")
@@ -44,7 +48,10 @@ public class RouteController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public void addRoute(
             @ApiParam(value = "Route object to add to database", required = true)
-            @RequestBody Route route) {
+            @Valid @RequestBody RouteDTO routeDTO) {
+        Route route = new Route();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(routeDTO, route);
         routeService.addRoute(route);
     }
 
@@ -68,7 +75,10 @@ public class RouteController {
             @ApiParam(value = "Id of route object to update", required = true)
             @PathVariable int id,
             @ApiParam(value = "Updated route object", required = true)
-            @RequestBody Route route) {
+            @Valid @RequestBody RouteDTO routeDTO) {
+        Route route = new Route();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(routeDTO, route);
         routeService.updateRoute(id, route);
     }
 

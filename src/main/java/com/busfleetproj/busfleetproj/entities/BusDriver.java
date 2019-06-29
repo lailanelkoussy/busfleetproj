@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Table(name = "bus_driver")
 @Entity
@@ -31,7 +30,6 @@ public class BusDriver {
 
     @OneToOne
     @JoinColumn(name = "license_id")
-    @NotNull
     private DrivingLicense license;
 
     public void makeBusNull(){

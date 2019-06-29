@@ -6,8 +6,10 @@ import com.busfleetproj.busfleetproj.entities.Student;
 import com.busfleetproj.busfleetproj.repos.BusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@CacheConfig(cacheNames={"buses"})
 public class BusService {
 
     @Autowired
@@ -27,15 +30,13 @@ public class BusService {
     @Autowired
     private StudentService studentService;
 
+    @Cacheable
     public List<Bus> getAllBuses() {
-        List<Bus> buses = new ArrayList<>();
         log.info("Retrieving bus objects from database");
-        busRepository.findAll()
-                .forEach(buses::add);
-
-        return buses;
+        return busRepository.findAll();
     }
 
+    @Cacheable(key = "#id")
     public Bus getBus(int id) {
 
         Optional<Bus> busOptional = busRepository.findById(id);
@@ -56,26 +57,24 @@ public class BusService {
 
     }
 
+    @CacheEvict(key = "#id")
     public void deleteBus(int id) {
         busRepository.deleteById(id);
         log.info("Deleting bus object id#" + id + "from database");
 
     }
 
-    public void updateBus(int id, Bus bus) {
+    @CachePut(key = "#id")
+    public Bus updateBus(int id, Bus bus) {
         busRepository.save(bus);
         log.info("Updating bus object id#" + id + " in database");
-
+        return bus;
     }
 
-    // we want to change  the bus to route_id's route
-    public void changeBusRoute(int id, int route_id) {
+    @CachePut(key = "#id")
+    public Bus changeBusRoute(int id, int route_id) {
 
-        List<Route> routeList = new ArrayList<>();
-        List<Bus> busList = new ArrayList<>();
-
-        Bus bus = getBus(id);                       //getting the concerned bus
-
+        Bus bus = getBus(id);                                                       //getting the concerned bus
 
         if (route_id == -1) {
             bus.makeRouteNull();                                                     //if we want to remove route from bus
@@ -84,18 +83,18 @@ public class BusService {
             Route route = routeService.getRoute(route_id);                          //route to update bus to
 
             route.setBus(bus);                                                      //setting route's bus to our bus
-            routeList.add(route);                                                   //adding route to update list
 
             bus.setRoute(route);                                                    //setting bus's route to new route
             log.info("Assigning route object id#" + route_id + " to bus object id#" + id);
+            routeService.updateRoute(route_id, route);
         }
 
-        busList.add(bus);
-        routeService.updateRoutes(routeList);
-        busRepository.saveAll(busList);
+        busRepository.save(bus);
         log.info("Saving changes to database");
+        return bus;
     }
 
+    @CacheEvict(key = "#id")
     public boolean addStudents(int id, List<Integer> studentIds) {
 
         Bus bus = getBus(id);
@@ -115,16 +114,20 @@ public class BusService {
             students.addAll(bus.getStudents());
             bus.setStudents(students);                                           //updating student list in bus
 
+            studentService.clearCache();
             return true;
         }
+
     }
 
+    @CacheEvict(allEntries = true)
     public void updateBuses(List<Bus> buses) {
         busRepository.saveAll(buses);
         log.info("Updating bus objects information");
     }
 
-    public void removeStudents(int id, List<Integer> studentIds) {
+    @CachePut(key = "#id")
+    public Bus removeStudents(int id, List<Integer> studentIds) {
         Bus bus = getBus(id);
         List<Student> studentsToUpdate = new ArrayList<>();
         List<Student> studentsToRemove = studentService.getStudents(studentIds);
@@ -140,6 +143,13 @@ public class BusService {
         bus.setStudents(busStudents);
         updateBus(id, bus);
 
+        studentService.clearCache();
         studentService.updateStudents(studentsToUpdate);
+        return bus;
+    }
+
+    @CachePut(key = "#id")
+    public Bus updateCacheEntry(int id, Bus bus){
+        return bus;
     }
 }
